@@ -1,0 +1,11 @@
+1.  A Boolean value is either true or false
+    5 == 6 ==> false
+    5%2 == 0 ==> false
+    a = "he"
+    b = "llo"
+    a+b = "hello" ==> true 
+2. ../C4E18/Fundamentals/Session02/homework/33617023_1941484332530421_5552360268014551040_n.jpg
+3. One conditional can also be nested within another
+    if 0 < x:
+        if x < 10:
+            print("x is a positive single digit.")
