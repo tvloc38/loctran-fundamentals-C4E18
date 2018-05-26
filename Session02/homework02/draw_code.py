@@ -8,7 +8,7 @@ for i in range(size):
             else:
                 print("*", end=" ")
         elif i == mid:
-            if j == 0 or j == (size+1) or j == (2*size) or j == (2*size+2) or j == (3*size+1) or j == (3*size+3) or j == (3*size+4) or j == (3*size+5) or j == (3*size+6) or j == (3*size+7):
+            if j == 0 or j == (size+1) or j == (2*size) or j == (2*size+2) or j == (3*size+1) or j > (3*size+2):
                 print("*", end=" ")
             else:
                 print(" ", end=" ")
