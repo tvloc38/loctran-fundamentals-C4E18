@@ -1,4 +1,3 @@
-import os
 map_sokoban = {
     "size_x":5,
     "size_y":5
@@ -8,79 +7,92 @@ enemies = [
     {"x": 3, "y": 4},
     {"x": 1, "y": 2}
 ]
-print(enemies)
+enemies_hit = []
 playing = True
 targets = []
-win = 0
 live = 5 
 while playing:
-    if win > 1:
-        print("You won!")
+    win =  all(elem in targets  for elem in enemies)
+    if win:
+        print("You won")
         playing = False
     elif live == 0:
         print("No live no play")
         playing = False
-    else:
-        target = dict()
-        
-        user_input = input("Enter your target: ")
-        
-        value1, value2 = user_input.split(" ")
+    else:         
+        # input
+        target = dict()  
+        user_input = input("Enter your target: ")  
+        value1, value2 = user_input.split(" ")   
+        target["x"] = int(value2) + 1
+        target["y"] = int(value1) + 1
+        if target in targets:
+            print("Bắn vào đây rồi nhé. Bắn lại đi")
+        elif target["x"] < 5 and target["y"] < 5:
+            targets.append(target)
+            # print(targets)
+            
+            # vẽ map
+            for y in range (map_sokoban["size_y"]):
+                for x in range (map_sokoban["size_x"]):
+                    enemy_is_here = False
+                    for enemy in enemies:
+                        if (enemy["x"] == x and enemy["y"] == y):
+                            enemy_is_here = True
 
-        target["x"] = int(value2)
-        target["y"] = int(value1)
-        targets.append(target)
-        print(targets)
-        # os.system ('clear')
-        for y in range (map_sokoban["size_y"]):
-            for x in range (map_sokoban["size_x"]):
-                enemy_is_here = False
-                for enemy in enemies:
-                    if (enemy["x"] == x and enemy["y"] == y):
-                        enemy_is_here = True
-
-                target_is_here = False
-                for tar in targets:
-                    if (tar["x"] + 1 == x and tar["y"] + 1 == y):
-                        target_is_here = True
-
-                if (enemy_is_here == True and target_is_here == True):
-                    pic = 'o'
-                elif (enemy_is_here == False and target_is_here == True):
-                    pic = 'x'
-                elif x == 0 and y == 0 :
-                    pic = ' '
-                elif x == 0:
-                    pic = y - 1
-                elif y == 0:
-                    pic = x - 1
-                else:
-                    pic = '-'
-                print (pic, end=' ')
-            print()
-        live -= 1
-        for enemy in enemies:
-            if (enemy["x"] == target["x"] + 1 and enemy["y"] == target["y"] + 1):
-                win += 1
+                    target_is_here = False
+                    for tar in targets:
+                        if (tar["x"] == x and tar["y"] == y):
+                            target_is_here = True
+            
+                    if (enemy_is_here == True and target_is_here == True):
+                        print("o", end=" ")
+                    elif (enemy_is_here == False and target_is_here == True):
+                        print("x", end=" ")
+                    elif x == 0 and y == 0 :
+                        print(" ", end=" ")
+                    elif x == 0:
+                        print(y - 1, end=" ")
+                    elif y == 0:
+                        print(x - 1, end=" ")
+                    else:
+                        print("-", end=" ")
+                print()
+            
+            # check hit
+            if target in enemies:
                 print("You hit")
-                break;
+                if target not in enemies_hit:
+                    enemies_hit.append(target)
             else:
-                print("You missed")  
-                
-        
-                
-        
-# for enemy in enemies:
-#     if (enemy["x"] == target["x"] and enemy["y"] == target["y"]):
-#         print("Hit")
-#     else:
-#         print("Missed")
+                print("You missed")
+            
+            
+            
+            # check around
+            targets_around = []
+            for a in range(target["y"]-1,target["y"]+2):
+                for b in range(target["x"]-1,target["x"]+2):
+                    if (a != target["y"] or b != target["x"]):
+                        if {"x": b, "y": a} not in enemies_hit:
+                            targets_around.append({"x": b, "y": a})
+            # print("targets_around:",targets_around)
+            result =  any(elem in targets_around  for elem in enemies)
+            result2 = all(elem in targets_around  for elem in enemies)
+            if result2:
+                print("2 enemy(s) around")
+            elif result:
+                print("1 enemy(s) around")
+            else :
+                print("0 enemy(s) around")  
 
-# enemy_is_here = False
-# for enemy in enemies:
-#     if (enemy["x"] == x and enemy["y"] == y):
-#         enemy_is_here = True
+            # check live
+            live -= 1
+            print(live, "rockets left") 
 
-# target_is_here = False
-# if (target["x"] == x and target["y"] == y):
-#     target_is_here = True
+            # check enemy left
+            left = 2 - len(enemies_hit)
+            print(left, "enemy(s) left")
+        else:
+            print("Bắn ra ngoài bản đồ rồi. Bắn lại đi")
+        
