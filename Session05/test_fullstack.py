@@ -7,13 +7,16 @@ enemies = [
     {"x": 3, "y": 4},
     {"x": 1, "y": 2}
 ]
-enemies_hit = []
+enemies_left = [
+    {"x": 3, "y": 4},
+    {"x": 1, "y": 2}
+]
+
 playing = True
 targets = []
 live = 5 
 while playing:
-    win =  all(elem in targets  for elem in enemies)
-    if win:
+    if len(enemies_left) == 0:
         print("You won")
         playing = False
     elif live == 0:
@@ -62,8 +65,8 @@ while playing:
             # check hit
             if target in enemies:
                 print("You hit")
-                if target not in enemies_hit:
-                    enemies_hit.append(target)
+                if target in enemies_left:
+                    enemies_left.remove(target)
             else:
                 print("You missed")
             
@@ -74,24 +77,19 @@ while playing:
             for a in range(target["y"]-1,target["y"]+2):
                 for b in range(target["x"]-1,target["x"]+2):
                     if (a != target["y"] or b != target["x"]):
-                        if {"x": b, "y": a} not in enemies_hit:
-                            targets_around.append({"x": b, "y": a})
-            # print("targets_around:",targets_around)
-            result =  any(elem in targets_around  for elem in enemies)
-            result2 = all(elem in targets_around  for elem in enemies)
-            if result2:
-                print("2 enemy(s) around")
-            elif result:
-                print("1 enemy(s) around")
-            else :
-                print("0 enemy(s) around")  
+                        targets_around.append({"x": b, "y": a})
+            around = 0
+            for enemy in enemies_left:
+                if enemy in targets_around:
+                    around += 1
+            print(around, "enemy(s) around")
 
             # check live
             live -= 1
             print(live, "rockets left") 
 
             # check enemy left
-            left = 2 - len(enemies_hit)
+            left = len(enemies_left)
             print(left, "enemy(s) left")
         else:
             print("Bắn ra ngoài bản đồ rồi. Bắn lại đi")
